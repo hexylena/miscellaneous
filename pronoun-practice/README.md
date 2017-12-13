@@ -38,8 +38,12 @@ time               | def/indef | gender | case | Right? | Observed   | Expected 
 1512983319.7528772 | a         | f      | akk  | False  | einer Frau | eine Frau  | 8.076109409332275
 1512983330.287123  | the       | m      | dat  | False  | den Mann   | dem Mann   | 3.9201772212982178
 
+## Features
 
-Bonus 2: Complete unconfigurable. Does not respect `XDG_anything`.
+- Good coverage of pronouns + nom/dat/akk/gen + genders.
+- Also covers personal pronouns.
+- Complete unconfigurable.
+- Does not respect `XDG_anything`.
 
 ## Coming Soon
 
