@@ -45,10 +45,11 @@ time               | def/indef | gender | case | Right? | Observed   | Expected 
 - Complete unconfigurable.
 - Does not respect `XDG_anything`.
 - py2/py3 compatible
+- prepositions
 
 ## Coming Soon
 
-prepositions!
+cleaner code!
 
 ## LICENSE
 
