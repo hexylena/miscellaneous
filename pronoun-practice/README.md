@@ -44,6 +44,7 @@ time               | def/indef | gender | case | Right? | Observed   | Expected 
 - Also covers personal pronouns.
 - Complete unconfigurable.
 - Does not respect `XDG_anything`.
+- py2/py3 compatible
 
 ## Coming Soon
 
