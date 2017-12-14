@@ -106,67 +106,70 @@ case_names = {
     'gen': 'genative',
 }
 
+def prep_question():
+    case = random.choice(list(prep.keys()))
+    prep = random.choice(prep[case])
+    return {
+        'expected': case,
+        'case': case,
+        'qtype': '_prep_',
+        'gender': '',
+        'question': "[prep] What case for %s" % prep
+    }
+
+
+def article_question():
+    defindef = random.choice(list(arts.keys()))
+    (gender, case) = random.choice(list(arts[defindef]))
+    noun_en, noun_de = random.choice(nouns[gender])
+    parts = arts[defindef][(gender, case)]
+    return {
+        'expected': parts['_'] + ' ' + noun_de + parts.get('ns', ''),
+        'case': case,
+        'qtype': defindef,
+        'gender': gender,
+        'question': "Translate: %s %s as %s" % (defindef, noun_en, case_names[case])
+    }
+
+
+def pronoun_question():
+    pronoun = random.choice(list(pp.keys()))
+    case = random.choice(list(pp[pronoun].keys()))
+    return {
+        'expected': pp[pronoun][case],
+        'case': case,
+        'qtype': '_pronoun_',
+        'gender': pronoun,
+        'question': "Translate: %s %s" % (pronoun, case_names[case])
+    }
+
+
+def validate_me(observed, expected, answered, asked):
+    if observed != expected:
+        print("WRONG:", expected)
+    else:
+        if answered - asked < 5:
+            print("Acceptable.")
+        else:
+            print("Slow.")
+
 
 try:
-    if random.random() < 0.3:
-        case = random.choice(list(prep.keys()))
-        prep = random.choice(prep[case])
-
-        print("[prep] What case for %s" % prep)
-        asked = time.time()
-        expected = case
-        observed = input("Answer: ").strip()
-        answered = time.time()
-
-        if observed != expected[0:3]:
-            print("WRONG:", expected[0:3])
-        else:
-            if answered - asked < 5:
-                print("Acceptable.")
-            else:
-                print("Slow.")
-
-        with open(LOGFILE, 'a') as handle:
-            handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (asked, '_prep_', '', case, observed == expected[0:3], observed, expected[0:3], answered - asked))
+    if True: #random.random() < 0.3:
+        q = prep_question()
     elif random.random() < 0.7:
-        defindef = random.choice(list(arts.keys()))
-        (gender, case) = random.choice(list(arts[defindef]))
-        noun_en, noun_de = random.choice(nouns[gender])
-        print("Translate: %s %s as %s" % (defindef, noun_en, case_names[case]))
-        asked = time.time()
-        parts = arts[defindef][(gender, case)]
-        expected = parts['_'] + ' ' + noun_de + parts.get('ns', '')
-        observed = input("Answer: ").strip()
-        answered = time.time()
-
-        if observed != expected:
-            print("WRONG:", expected)
-        else:
-            if answered - asked < 5:
-                print("Acceptable.")
-            else:
-                print("Slow.")
-
-        with open(LOGFILE, 'a') as handle:
-            handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (asked, defindef, gender, case, observed == expected, observed, expected, answered - asked))
+        q = article_question()
     else:
-        pronoun = random.choice(list(pp.keys()))
-        case = random.choice(list(pp[pronoun].keys()))
-        print("Translate: %s %s" % (pronoun, case_names[case]))
-        asked = time.time()
-        expected = pp[pronoun][case]
-        observed = input("Answer: ").strip()
-        answered = time.time()
+        q = pronoun_question()
 
-        if observed != expected:
-            print("WRONG:", expected)
-        else:
-            if answered - asked < 5:
-                print("Acceptable.")
-            else:
-                print("Slow.")
+    print(q['question'])
+    asked = time.time()
+    observed = input("Answer: ").strip()
+    answered = time.time()
+    validate_me(observed, expected, answered, asked)
 
-        with open(LOGFILE, 'a') as handle:
-            handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (asked, '_pronoun_', pronoun, case, observed == expected, observed, expected, answered - asked))
+    with open(LOGFILE, 'a') as handle:
+        handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (asked, q['qtype'], q['gender'], q['case'], observed == q['expected'], observed, expected, answered - asked))
+
 except KeyboardInterrupt:
     pass
